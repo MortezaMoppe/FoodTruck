@@ -2,23 +2,41 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const API_BASE_URL = "https://fdnzawlcf6.execute-api.eu-north-1.amazonaws.com";
 const TENANT_NAME = "Morteza";
+const API_KEY = "yum-7BTxHCyHhzIME5TI";  // API-nyckeln sparas här
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: API_BASE_URL,
+  prepareHeaders: (headers) => {
+    headers.set("x-zocom", API_KEY); 
+    console.log("🔍 Headers skickas till API:", headers);
+    return headers;
+  },
+});
 
 export const foodtruckApi = createApi({
   reducerPath: "foodtruckApi",
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+  baseQuery,
   endpoints: (builder) => ({
-    getApiKey: builder.query<{ apiKey: string }, void>({
-      query: () => ({ url: "/keys", method: "POST" }),
+    getMenu: builder.query<any, void>({ 
+      query: () => {
+        console.log(" Skickar meny-request...");
+        return { url: "/menu", method: "GET" };
+      },
     }),
-    getMenu: builder.query<any, string>({
-      query: (apiKey) => ({
-        url: "/menu",
-        method: "GET",
-        headers: { "x-zocom": apiKey },
-      }),
+    placeOrder: builder.mutation<{ orderId: string; eta: number }, { items: any[] }>({
+      query: ({ items }) => { 
+        console.log(" Skickar order:", items);
+        return {
+          url: "/order",
+          method: "POST",
+          body: JSON.stringify({
+            tenant: TENANT_NAME,
+            items,
+          }),
+        };
+      },
     }),
   }),
 });
 
-export const { useGetApiKeyQuery, useGetMenuQuery } = foodtruckApi;
-
+export const { useGetMenuQuery, usePlaceOrderMutation } = foodtruckApi;
