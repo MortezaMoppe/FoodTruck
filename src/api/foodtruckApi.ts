@@ -8,7 +8,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: (headers) => {
     headers.set("x-zocom", API_KEY); 
-   
+    headers.set("Content-Type", "application/json"); 
     return headers;
   },
 });
@@ -17,26 +17,29 @@ export const foodtruckApi = createApi({
   reducerPath: "foodtruckApi",
   baseQuery,
   endpoints: (builder) => ({
-    getMenu: builder.query<any, void>({ 
-      query: () => {
-        
-        return { url: "/menu", method: "GET" };
-      },
+    getMenu: builder.query<any, void>({
+      query: () => "/menu",
     }),
-    placeOrder: builder.mutation<{ orderId: string; eta: number }, { items: any[] }>({
-      query: ({ items }) => { 
-        
-        return {
-          url: "/order",
-          method: "POST",
-          body: JSON.stringify({
-            tenant: TENANT_NAME,
-            items,
-          }),
-        };
-      },
+    placeOrder: builder.mutation<{ orderId: string; eta: number }, { items: number[] }>({
+      query: ({ items }) => ({
+        url: `/${TENANT_NAME}/orders`, 
+        method: "POST",
+        body: { items },
+      }),
+    }),
+    getOrder: builder.query<{ orderId: string; eta: number }, { orderId: string }>({
+      query: ({ orderId }) => ({
+        url: `/${TENANT_NAME}/orders/${orderId}`,
+        method: "GET",
+      }),
+    }),
+    getReceipt: builder.query<{ total: number; items: any[] }, { orderId: string }>({
+      query: ({ orderId }) => ({
+        url: `/receipts/${orderId}`, 
+        method: "GET",
+      }),
     }),
   }),
 });
 
-export const { useGetMenuQuery, usePlaceOrderMutation } = foodtruckApi;
+export const { useGetMenuQuery, usePlaceOrderMutation, useGetOrderQuery, useGetReceiptQuery } = foodtruckApi;

@@ -1,52 +1,69 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { removeFromCart, clearCart } from "../features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { usePlaceOrderMutation } from "../api/foodtruckApi";
+import { setOrder, clearOrder } from "../features/order/orderSlice";
+import { clearCart } from "../features/cart/cartSlice";
+import { useState } from "react";
 
 export const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [placeOrder, { data: orderData }] = usePlaceOrderMutation();
+  const [loading, setLoading] = useState(false);
 
+  const handlePlaceOrder = async () => {
+    if (cart.length === 0) return;
+    setLoading(true);
 
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    try {
+      const items = cart.map(item => Number(item.id)); 
+      const result = await placeOrder({ items }).unwrap();
+      console.log("Beställning skickad:", result);
+      dispatch(setOrder(result)); 
+      dispatch(clearCart()); 
+      navigate("/eta"); 
+    } catch (error) {
+    
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex justify-center">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4">Min Beställning</h2>
+      <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+        <h2 className="text-2xl font-bold mb-4">Min Beställning</h2>
+        
         {cart.length === 0 ? (
-          <p className="text-gray-500 text-center">Varukorgen är tom.</p>
+          <p className="text-gray-500">Din varukorg är tom.</p>
         ) : (
-          <div className="space-y-4">
+          <div>
             {cart.map((item) => (
-              <div key={item.id} className="flex justify-between items-center border-b pb-2">
-                <span>{item.name} - {item.price} kr x {item.quantity}</span>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  onClick={() => dispatch(removeFromCart(item.id))}
-                >
-                  X Ta bort
-                </button>
-              </div>
+              <p key={item.id}>{item.name} - {item.price} kr x {item.quantity}</p>
             ))}
-            <div className="text-lg font-bold text-right mt-4">Totalt: {totalPrice} kr</div>
-            
-            <div className="flex gap-8 justify-center mt-4">
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-40 mt-4"
-              onClick={() => dispatch(clearCart())}
-            >
-              Töm varukorg
-            </button>
-            <button
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-40 mt-4"
-              onClick={() => navigate("/eta")}
-            >
-              Betala
-            </button>
-          </div>
+            <p className="font-bold mt-4">Totalt: {cart.reduce((total, item) => total + item.price * item.quantity, 0)} kr</p>
           </div>
         )}
+
+        
+        {cart.length > 0 && (
+          <button
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full max-w-md mt-4"
+            onClick={handlePlaceOrder}
+            disabled={loading}
+          >
+            {loading ? "Lägger beställning..." : "Betala"}
+          </button>
+        )}
+
+        <button
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full max-w-md mt-2"
+          onClick={() => dispatch(clearCart())}
+        >
+          Töm varukorg
+        </button>
       </div>
     </div>
   );
