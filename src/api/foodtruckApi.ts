@@ -8,7 +8,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: (headers) => {
     headers.set("x-zocom", API_KEY); 
-    console.log("🔍 Headers skickas till API:", headers);
+   
     return headers;
   },
 });
@@ -19,13 +19,13 @@ export const foodtruckApi = createApi({
   endpoints: (builder) => ({
     getMenu: builder.query<any, void>({ 
       query: () => {
-        console.log(" Skickar meny-request...");
+        
         return { url: "/menu", method: "GET" };
       },
     }),
     placeOrder: builder.mutation<{ orderId: string; eta: number }, { items: any[] }>({
       query: ({ items }) => { 
-        console.log(" Skickar order:", items);
+        
         return {
           url: "/order",
           method: "POST",
