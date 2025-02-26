@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface OrderState {
+  orderData:{
   orderId: string | null;
-  eta: number | null;
+  eta: number; 
+} | null;
 }
 
 const initialState: OrderState = {
-  orderId: null,
-  eta: null,
+  orderData: null,
+ 
 };
 
 const orderSlice = createSlice({
@@ -15,12 +17,14 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     setOrder: (state, action: PayloadAction<{ orderId: string; eta: number }>) => {
-      state.orderId = action.payload.orderId;
-      state.eta = action.payload.eta;
+      state.orderData = { 
+        orderId: action.payload.orderId,
+        eta: action.payload.eta
+      };
     },
     clearOrder: (state) => {
-      state.orderId = null;
-      state.eta = null;
+      state.orderData = null;
+      
     },
   },
 });
