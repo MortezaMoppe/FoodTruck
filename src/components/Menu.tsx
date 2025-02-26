@@ -6,9 +6,9 @@ import { addToCart } from "../features/cart/cartSlice";
 
 export const Menu = () => {
   const dispatch = useDispatch();
-  const { data: menu, error } = useGetMenuQuery();
+  const { data, error } = useGetMenuQuery();
+  const menu = data?.items || [];
 
-  
 
   useEffect(() => {
     if (Array.isArray(menu)) {
@@ -25,19 +25,24 @@ export const Menu = () => {
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl mb-4">Meny</h2>
-      {menu.map((item: MenuItem) => (
-        <div key={item.id} className="flex justify-between p-2 border-b">
-          <span>{item.name} - {item.price} kr</span>
-          <button
-            className="bg-blue-500 text-white px-2 py-1 rounded"
-            onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
-          >
-            Lägg till
-          </button>
-        </div>
-      ))}
+    
+    <div className="min-h-screen bg-green-100 p-6 flex justify-center">
+    <div className="bg-white shadow-lg rounded-lg p-4 w-full max-w-md">
+      <h2 className="text-2xl font-bold text-center mb-4">Meny</h2>
+      <div className="space-y-4">
+        {menu.map((item: MenuItem) => (
+          <div key={item.id} className="flex justify-between items-center border-b pb-2">
+            <span className="text-lg font-semibold">{item.name} - {item.price} kr</span>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
+            >
+              + Lägg till
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
+  </div>
   );
 };
