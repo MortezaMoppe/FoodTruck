@@ -6,8 +6,6 @@ export const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
 
-  console.log("Nuvarande varukorg:", cart);
-
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex justify-center">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
