@@ -1,58 +1,41 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../app/store";
-import { removeFromCart, decreaseQuantity, clearCart } from "../features/cart/cartSlice";
-import { Link } from "react-router-dom";
+import { removeFromCart, clearCart } from "../features/cart/cartSlice";
 
 export const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
 
-  const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  console.log("Nuvarande varukorg:", cart);
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl mb-4">Min Beställning</h2>
-      {cart.length === 0 ? (
-        <p>Varukorgen är tom.</p>
-      ) : (
-        <>
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between p-2 border-b">
-              <span>
-                {item.name} - {item.price} kr (x{item.quantity})
-              </span>
-              <div>
+    <div className="min-h-screen bg-gray-100 p-6 flex justify-center">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-4">Min Beställning</h2>
+        {cart.length === 0 ? (
+          <p className="text-gray-500 text-center">Varukorgen är tom.</p>
+        ) : (
+          <div className="space-y-4">
+            {cart.map((item) => (
+              <div key={item.id} className="flex justify-between items-center border-b pb-2">
+                <span>{item.name} - {item.price} kr x {item.quantity}</span>
                 <button
-                  className="bg-gray-300 px-2 py-1 mx-1 rounded"
-                  onClick={() => dispatch(decreaseQuantity(item.id))}
-                >
-                  -
-                </button>
-                <button
-                  className="bg-red-500 text-white px-2 py-1 rounded"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   onClick={() => dispatch(removeFromCart(item.id))}
                 >
-                  Ta bort
+                  X Tabort
                 </button>
               </div>
-            </div>
-          ))}
-          <div className="mt-4">
-            <p className="text-lg font-bold">Totalt: {totalPrice} SEK</p>
+            ))}
             <button
-              className="mt-4 bg-gray-800 text-white px-4 py-2 rounded"
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4"
               onClick={() => dispatch(clearCart())}
             >
-              Rensa Varukorg
+              Töm varukorg
             </button>
-            <Link to="/order">
-              <button className="mt-4 bg-green-500 text-white px-4 py-2 rounded ml-2">
-                Ta min order!
-              </button>
-            </Link>
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };
