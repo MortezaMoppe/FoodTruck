@@ -20,12 +20,12 @@ export const Cart = () => {
     try {
       const items = cart.map(item => Number(item.id)); 
       const result = await placeOrder({ items }).unwrap();
-      console.log("Beställning skickad:", result);
       dispatch(setOrder(result)); 
       dispatch(clearCart()); 
       navigate("/eta"); 
-    } catch (error) {
-    
+    } 
+    catch (error) {
+  
     }
 
     setLoading(false);

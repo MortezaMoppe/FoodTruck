@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, nanoid} from "@reduxjs/toolkit";
 
 interface OrderState {
   orderData:{
@@ -17,9 +17,11 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     setOrder: (state, action: PayloadAction<{ orderId: string; eta: number }>) => {
+
+     
       state.orderData = { 
-        orderId: action.payload.orderId,
-        eta: action.payload.eta
+        orderId: action.payload.orderId || `ORD - ${nanoid(6)}`,
+        eta: action.payload.eta ?? 5,
       };
     },
     clearOrder: (state) => {

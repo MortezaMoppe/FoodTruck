@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setOrder } from "../features/order/orderSlice";
+import {  clearOrder } from "../features/order/orderSlice";
 import { useNavigate } from "react-router-dom";
 
 export const Order = () => {
@@ -10,8 +10,8 @@ export const Order = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!order) {
-      
+     {
+
     }
   }, [order]);
 
@@ -35,7 +35,7 @@ export const Order = () => {
     <div className="min-h-screen bg-gray-900 text-white p-6 flex flex-col justify-center items-center">
       <h2 className="text-2xl font-bold mb-4">Dina wontons tillagas!</h2>
       <p className="text-lg mb-2">ETA: {order.eta} minuter</p>
-      <p className="text-md mb-4">Ordernummer: {order.orderId || "Ej tillgängligt"}</p>
+      <p className="text-md mb-4"> {order.orderId || "Ej tillgängligt"}</p>
 
       <button
         className="bg-white text-gray-900 px-6 py-2 rounded hover:bg-gray-300 w-full max-w-md mb-4"
@@ -46,7 +46,8 @@ export const Order = () => {
       <button
         className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full max-w-md"
         onClick={() => {
-          dispatch(setOrder({ orderId: "", eta: 0 })); 
+          dispatch(clearOrder());
+          navigate("/");
         }}
       >
         Gör en ny beställning
