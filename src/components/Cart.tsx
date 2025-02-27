@@ -3,14 +3,14 @@ import { RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
 import { usePlaceOrderMutation } from "../api/foodtruckApi";
 import { setOrder, clearOrder } from "../features/order/orderSlice";
-import { clearCart } from "../features/cart/cartSlice";
+import { clearCart,removeFromCart, decreaseQuantity } from "../features/cart/cartSlice";
 import { useState } from "react";
 
 export const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [placeOrder, { data: orderData }] = usePlaceOrderMutation();
+  const [placeOrder,] = usePlaceOrderMutation();
   const [loading, setLoading] = useState(false);
 
   const handlePlaceOrder = async () => {
@@ -20,8 +20,9 @@ export const Cart = () => {
     try {
       const items = cart.map(item => Number(item.id)); 
       const result = await placeOrder({ items }).unwrap();
+
       dispatch(setOrder(result)); 
-      dispatch(clearCart()); 
+      
       navigate("/eta"); 
     } 
     catch (error) {
@@ -39,15 +40,29 @@ export const Cart = () => {
         {cart.length === 0 ? (
           <p className="text-gray-500">Din varukorg är tom.</p>
         ) : (
-          <div>
+          <div className="space-y-4">
             {cart.map((item) => (
-              <p key={item.id}>{item.name} - {item.price} kr x {item.quantity}</p>
+              <div key={item.id} className="flex justify-between items-center border-b pb-2">
+                <span>{item.name} - {item.price} kr x {item.quantity}</span>
+                <div className="flex space-x-2">
+                  <button
+                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                    onClick={() => dispatch(decreaseQuantity(item.id))}
+                  >
+                    −
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                    onClick={() => dispatch(removeFromCart(item.id))}
+                  >
+                    X
+                  </button>
+                </div>
+              </div>
             ))}
             <p className="font-bold mt-4">Totalt: {cart.reduce((total, item) => total + item.price * item.quantity, 0)} kr</p>
           </div>
         )}
-
-        
         {cart.length > 0 && (
           <button
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full max-w-md mt-4"
@@ -59,8 +74,18 @@ export const Cart = () => {
         )}
 
         <button
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full max-w-md mt-2"
-          onClick={() => dispatch(clearCart())}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full max-w-md mt-2"
+          onClick={() => {dispatch(clearOrder())
+            navigate("/")
+          }}
+          
+        >
+          Lägg till
+        </button>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full max-w-md mt-2"
+          onClick={() => {dispatch(clearCart())
+            navigate("/")}}
         >
           Töm varukorg
         </button>
