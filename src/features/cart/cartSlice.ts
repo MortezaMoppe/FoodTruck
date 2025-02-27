@@ -36,7 +36,7 @@ const cartSlice = createSlice({
         if (existingItem.quantity > 1) {
           existingItem.quantity -= 1;
         } else {
-          // Om bara en finns kvar, ta bort den helt
+          
           state.items = state.items.filter((item) => item.id !== action.payload);
         }
       }
