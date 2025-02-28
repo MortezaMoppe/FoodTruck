@@ -1,8 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import menuReducer from "../features/menu/menuSlice";
-import cartReducer from "../features/cart/cartSlice";
-import orderReducer from "../features/order/orderSlice";
-import { foodtruckApi } from "../api/foodtruckApi";
+import { menuReducer, cartReducer, orderReducer } from "../reducers";
+import { foodtruckApi } from "../api";
 
 export const store = configureStore({
   reducer: {

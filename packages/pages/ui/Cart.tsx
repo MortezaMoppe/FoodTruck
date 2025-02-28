@@ -1,47 +1,23 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../app/store";
-import { useNavigate } from "react-router-dom";
-import { usePlaceOrderMutation } from "../api/foodtruckApi";
-import { setOrder, clearOrder } from "../features/order/orderSlice";
-import { clearCart,removeFromCart, decreaseQuantity } from "../features/cart/cartSlice";
-import { useState } from "react";
+import { useCart } from "../data/cartData";
 
 export const Cart = () => {
-  const cart = useSelector((state: RootState) => state.cart.items);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [placeOrder,] = usePlaceOrderMutation();
-  const [loading, setLoading] = useState(false);
-
-  const handlePlaceOrder = async () => {
-    if (cart.length === 0) return;
-    setLoading(true);
-
-    try {
-      const items = cart.map(item => Number(item.id)); 
-
-      const result = await placeOrder({ items }).unwrap();
-
-      dispatch(setOrder({
-        id: result.order?.id, 
-        eta: result.order.eta,
-        timestamp: result.order.timestamp,
-      })); 
-      
-      navigate("/eta"); 
-    } 
-    catch (error) {
-      console.error("Order-fel:", error);
-    }
-
-    setLoading(false);
-  };
+  const {
+    cart,
+    dispatch,
+    navigate,
+    handlePlaceOrder,
+    loading,
+    clearOrder,
+    clearCart,
+    removeFromCart,
+    decreaseQuantity,
+  } = useCart();
 
   return (
     <div className="min-h-screen bg-gray-700 p-6 flex justify-center">
       <div className="bg-gray-300 shadow-lg rounded-lg p-6 text-center">
         <h2 className="text-2xl font-bold mb-4">Min Beställning</h2>
-        
+
         {cart.length === 0 ? (
           <p className="text-gray-500">Din varukorg är tom.</p>
         ) : (
@@ -80,22 +56,24 @@ export const Cart = () => {
 
         <button
           className="bg-blue-500 text-gray-100 px-4 py-2 rounded hover:bg-blue-600 w-full max-w-md mt-2"
-          onClick={() => {dispatch(clearOrder())
-            navigate("/")
+          onClick={() => {
+            dispatch(clearOrder());
+            navigate("/");
           }}
-          
         >
           Lägg till
         </button>
-        
+
         {cart.length > 0 && (
-        <button
-          className="bg-red-500 text-gray-100 px-4 py-2 rounded hover:bg-gray-600 w-full max-w-md mt-2"
-          onClick={() => {dispatch(clearCart())
-            navigate("/")}}
-        >
-          Töm varukorg
-        </button>
+          <button
+            className="bg-red-500 text-gray-100 px-4 py-2 rounded hover:bg-gray-600 w-full max-w-md mt-2"
+            onClick={() => {
+              dispatch(clearCart());
+              navigate("/");
+            }}
+          >
+            Töm varukorg
+          </button>
         )}
       </div>
     </div>

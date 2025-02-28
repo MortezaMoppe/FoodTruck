@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "packages/core/reducers/data/menuSlice.ts", "packages/core/reducers/data/cartSlice.ts", "packages/core/reducers/data/orderSlice.ts", "packages/core/api", "packages/base/ui/Navbar.tsx"]
 }

@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import { Menu } from "../pages/Menu";
-import { Cart } from "../pages/Cart";
-import { Navbar } from "../components/Navbar";
-import { Order } from "../pages/Order";
-import { Receipt } from "../pages/Receipt";
+import { Menu } from "../../pages";
+import { Cart } from "../../pages";
+import { Navbar } from "../../base/ui";
+import { Order } from "../../pages";
+import { Receipt } from "../../pages";
+import React from "react";
 
 
 

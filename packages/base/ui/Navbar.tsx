@@ -1,16 +1,9 @@
-import { Link, useLocation} from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { Link } from "react-router-dom";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { useNavbar } from "../data/useNavbar";
 
 export const Navbar = () => {
-  const cartCount = useSelector((state: RootState) =>
-    state.cart.items.reduce((acc, item) => acc + item.quantity, 0)
-  );
-
-  const location = useLocation();
-  const hideCartNumber = ["/cart", ].includes(location.pathname);
-  const hideCartIcon = ["/eta", "/receipt"].includes(location.pathname);
+  const { cartCount, hideCartNumber, hideCartIcon } = useNavbar();
 
   return (
     <nav className="p-4 bg-gray-800 text-white flex justify-between items-center">
@@ -29,3 +22,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+
