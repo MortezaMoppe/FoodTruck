@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const API_BASE_URL = "https://fdnzawlcf6.execute-api.eu-north-1.amazonaws.com";
 const TENANT_NAME = "Morteza";
-const API_KEY = "yum-7BTxHCyHhzIME5TI";  // API-nyckeln sparas här
+const API_KEY = "yum-7BTxHCyHhzIME5TI"; 
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -20,22 +20,23 @@ export const foodtruckApi = createApi({
     getMenu: builder.query<any, void>({
       query: () => "/menu",
     }),
-    placeOrder: builder.mutation<{ orderId: string; eta: number }, { items: number[] }>({
+    placeOrder: builder.mutation<
+    {order: { id: string; eta: string, timestamp: string }}, { items: number[] }>({
       query: ({ items }) => ({
         url: `/${TENANT_NAME}/orders`, 
         method: "POST",
         body: { items },
       }),
     }),
-    getOrder: builder.query<{ orderId: string; eta: number }, { orderId: string }>({
-      query: ({ orderId }) => ({
-        url: `/${TENANT_NAME}/orders/${orderId}`,
+    getOrder: builder.query<{ id: string; eta: number }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/${TENANT_NAME}/orders/${id}`,
         method: "GET",
       }),
     }),
-    getReceipt: builder.query<{ total: number; items: any[] }, { orderId: string }>({
-      query: ({ orderId }) => ({
-        url: `/receipts/${orderId}`, 
+    getReceipt: builder.query<{ total: number; items: any[] }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/receipts/${id}`, 
         method: "GET",
       }),
     }),

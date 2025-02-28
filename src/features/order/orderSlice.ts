@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction, nanoid} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction,} from "@reduxjs/toolkit";
 
 interface OrderState {
   orderData:{
-  orderId: string | null;
-  eta: number; 
+  id: string;
+  eta: string; 
+  timestamp: string;
 } | null;
 }
 
@@ -16,14 +17,16 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    setOrder: (state, action: PayloadAction<{ orderId: string; eta: number }>) => {
-
-     
+    setOrder: (state, action: PayloadAction<{ id: string; eta: string; timestamp: string}>) =>
+      
+      {
       state.orderData = { 
-        orderId: action.payload.orderId || `ORD - ${nanoid(6)}`,
-        eta: action.payload.eta ?? 5,
+        id: action.payload.id,
+        eta: action.payload.eta,
+        timestamp: action.payload.timestamp,
       };
     },
+
     clearOrder: (state) => {
       state.orderData = null;
       
